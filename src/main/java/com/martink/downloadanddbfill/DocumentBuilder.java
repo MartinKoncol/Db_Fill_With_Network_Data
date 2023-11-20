@@ -52,31 +52,18 @@ public class DocumentBuilder {
     public static void listValues(Element eElement, String tagName) {
 
         if (tagName == "vf:Obec") {
-            System.out.println("obi:Nazev : " + eElement.getElementsByTagName("obi:Nazev").item(0).getTextContent());
-            System.out.println("obi:Kod : " + eElement.getElementsByTagName("obi:Kod").item(0).getTextContent());
+            System.out.println("obec:Nazev : " + eElement.getElementsByTagName("obi:Nazev").item(0).getTextContent());
+            System.out.println("obec:Kod   : " + eElement.getElementsByTagName("obi:Kod").item(0).getTextContent());
         }
         else if (tagName == "vf:CastObce"){
-            System.out.println("obi:Kod : " + eElement.getElementsByTagName("obi:Kod").item(0).getTextContent());
-            System.out.println("coi:Nazev : " + eElement.getElementsByTagName("coi:Nazev").item(0).getTextContent());
-            System.out.println("coi:Kod : " + eElement.getElementsByTagName("coi:Kod").item(0).getTextContent());
+            System.out.println("obec:Kod : " + eElement.getElementsByTagName("obi:Kod").item(0).getTextContent());
+            System.out.println("-------------------------------------");
+            System.out.println("\tcastObce:Nazev : " + eElement.getElementsByTagName("coi:Nazev").item(0).getTextContent());
+            System.out.println("\tcastObce:Kod   : " + eElement.getElementsByTagName("coi:Kod").item(0).getTextContent());
+            System.out.println("-------------------------------------");
         }
     }
-
-    public static void DataValidator(Document document)
-            throws IOException, SAXException {
-        Schema schema = null;
-        try {
-            String language = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-            SchemaFactory factory = SchemaFactory.newInstance(language);
-            schema = factory.newSchema(new File("C:\\Dev\\Udemy\\Db_Fill_With_Network_Data\\src\\main\\resources\\20210331_OB_573060_UZSZ.xml"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        Validator validator = schema.newValidator();
-        validator.validate(new DOMSource(document));
-    }
-
+    
     public static Document readXMLDocumentFromFile(String fileNameWithPath) throws Exception {
 
         //Get Document Builder
