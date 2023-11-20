@@ -13,7 +13,7 @@ public class InputFile {
     private String fileLocation;
     private String saveToPath;
 
-    public static String getFilenameFromURL(String downloadFromURL) {
+    private static String getFilenameFromURL(String downloadFromURL) {
         URL url;
         try {
             url = new URL(downloadFromURL);
@@ -38,7 +38,7 @@ public class InputFile {
         }
     }
 
-    public static void saveFileFromUrlWithCommonsIO(String fileName,
+    private static void saveFileFromUrlWithCommonsIO(String fileName,
                                                     String fileUrl)
             throws IOException {
         FileUtils.copyURLToFile(new URL(fileUrl), new File(fileName));
@@ -74,7 +74,7 @@ public class InputFile {
         zis.close();
     }
 
-    public static void writeFileContent(ZipInputStream zis,
+    private static void writeFileContent(ZipInputStream zis,
                                         File newFile,
                                         byte[] buffer) throws IOException {
         FileOutputStream fos = new FileOutputStream(newFile);
@@ -84,7 +84,6 @@ public class InputFile {
         }
         fos.close();
     }
-
 
     public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
         File destFile = new File(destinationDir, zipEntry.getName());
@@ -99,4 +98,7 @@ public class InputFile {
         return destFile;
     }
 
+    public String getFileLocation() {
+        return fileLocation;
+    }
 }
