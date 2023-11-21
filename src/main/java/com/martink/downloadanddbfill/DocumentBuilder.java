@@ -4,37 +4,29 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 import java.io.File;
-import java.io.IOException;
+import java.sql.SQLException;
 
 public class DocumentBuilder {
 
-    public void DataParsing(String fileLocation) throws Exception {
+    Document document;
+
+    public void dataParsing(String fileLocation) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         javax.xml.parsers.DocumentBuilder builder = factory.newDocumentBuilder();
 
-        Document document = builder.parse(new File("C:\\Dev\\Udemy\\Db_Fill_With_Network_Data\\src\\main\\resources\\20210331_OB_573060_UZSZ.xml"));
+        document = builder.parse(new File("C:\\Dev\\Udemy\\Db_Fill_With_Network_Data\\src\\main\\resources\\20210331_OB_573060_UZSZ.xml"));
 
         Document documento = readXMLDocumentFromFile("C:\\Dev\\Udemy\\Db_Fill_With_Network_Data\\src\\main\\resources\\20210331_OB_573060_UZSZ.xml");
 
         Element root = documento.getDocumentElement();
         System.out.println(root.getNodeName());
 
-        nodeListing(document, "vf:Obec");
-        nodeListing(document, "vf:CastObce");
-
-
     }
 
-    public static void nodeListing(Document document, String tagName) {
+    public void nodeListing( String tagName) throws SQLException {
 
         NodeList nList = document.getElementsByTagName(tagName);
         System.out.println("============================");
@@ -49,17 +41,27 @@ public class DocumentBuilder {
         }
     }
 
-    public static void listValues(Element eElement, String tagName) {
+    public  void listValues(Element eElement, String tagName) throws SQLException {
+        JDBC dbIns = new JDBC ();
 
-        if (tagName == "vf:Obec") {
-            System.out.println("obec:Nazev : " + eElement.getElementsByTagName("obi:Nazev").item(0).getTextContent());
-            System.out.println("obec:Kod   : " + eElement.getElementsByTagName("obi:Kod").item(0).getTextContent());
+        if (tagName.equals("vf:Obec")) {
+            String obecfield1 = eElement.getElementsByTagName("obi:Kod").item(0).getTextContent();
+            String obecfield2 = eElement.getElementsByTagName("obi:Nazev").item(0).getTextContent();
+
+            dbIns.databaseInsert(obecfield1,obecfield2,"");
+            System.out.println("obec:Nazev : " + obecfield1);
+            System.out.println("obec:Kod   : " + obecfield2);
         }
-        else if (tagName == "vf:CastObce"){
-            System.out.println("obec:Kod : " + eElement.getElementsByTagName("obi:Kod").item(0).getTextContent());
+        else if (tagName.equals("vf:CastObce")){
+            String obecfield1 = eElement.getElementsByTagName("obi:Kod").item(0).getTextContent();
+            String obecfield3 = eElement.getElementsByTagName("coi:Nazev").item(0).getTextContent();
+            String obecfield4 = eElement.getElementsByTagName("coi:Kod").item(0).getTextContent();
+
+            dbIns.databaseInsert(obecfield1,obecfield3,obecfield4);
+            System.out.println("obec:Kod : " + obecfield1);
             System.out.println("-------------------------------------");
-            System.out.println("\tcastObce:Nazev : " + eElement.getElementsByTagName("coi:Nazev").item(0).getTextContent());
-            System.out.println("\tcastObce:Kod   : " + eElement.getElementsByTagName("coi:Kod").item(0).getTextContent());
+            System.out.println("\tcastObce:Nazev : " + obecfield3);
+            System.out.println("\tcastObce:Kod   : " + obecfield4);
             System.out.println("-------------------------------------");
         }
     }
