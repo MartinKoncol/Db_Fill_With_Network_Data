@@ -26,7 +26,7 @@ public class DocumentBuilder {
 
     }
 
-    public void nodeListing( String tagName) throws SQLException {
+    public void nodeListing( String tagName,JDBC dbIns) throws SQLException {
 
         NodeList nList = document.getElementsByTagName(tagName);
         System.out.println("============================");
@@ -36,46 +36,37 @@ public class DocumentBuilder {
 
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element eElement = (Element) node;
-                listValues(eElement,tagName);
+                listValues(eElement, tagName, dbIns);
             }
         }
     }
 
-    public  void listValues(Element eElement, String tagName) throws SQLException {
-        JDBC dbIns = new JDBC ();
-
+    public  void listValues(Element eElement, String tagName,JDBC dbIns) throws SQLException {
         if (tagName.equals("vf:Obec")) {
             String obecfield1 = eElement.getElementsByTagName("obi:Kod").item(0).getTextContent();
             String obecfield2 = eElement.getElementsByTagName("obi:Nazev").item(0).getTextContent();
 
-            dbIns.databaseInsert(obecfield1,obecfield2,"");
-            System.out.println("obec:Nazev : " + obecfield1);
-            System.out.println("obec:Kod   : " + obecfield2);
-        }
+            dbIns.databaseInsert(tagName,obecfield1,obecfield2,"");
+
+              }
         else if (tagName.equals("vf:CastObce")){
             String obecfield1 = eElement.getElementsByTagName("obi:Kod").item(0).getTextContent();
             String obecfield3 = eElement.getElementsByTagName("coi:Nazev").item(0).getTextContent();
             String obecfield4 = eElement.getElementsByTagName("coi:Kod").item(0).getTextContent();
 
-            dbIns.databaseInsert(obecfield1,obecfield3,obecfield4);
-            System.out.println("obec:Kod : " + obecfield1);
-            System.out.println("-------------------------------------");
-            System.out.println("\tcastObce:Nazev : " + obecfield3);
-            System.out.println("\tcastObce:Kod   : " + obecfield4);
-            System.out.println("-------------------------------------");
-        }
+            dbIns.databaseInsert(tagName,obecfield1,obecfield3,obecfield4);
+
+         }
+
     }
     
     public static Document readXMLDocumentFromFile(String fileNameWithPath) throws Exception {
 
-        //Get Document Builder
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         javax.xml.parsers.DocumentBuilder builder = factory.newDocumentBuilder();
 
-        //Build Document
         Document document = builder.parse(new File(fileNameWithPath));
 
-        //Normalize the XML Structure; It's just too important !!
         document.getDocumentElement().normalize();
 
         return document;

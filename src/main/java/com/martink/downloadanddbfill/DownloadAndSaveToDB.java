@@ -1,11 +1,13 @@
 package com.martink.downloadanddbfill;
 
-public class ProcessFile {
+public class DownloadAndSaveToDB {
 
     public void process() throws Exception {
         InputFile input = new InputFile();
         DocumentBuilder parsing = new DocumentBuilder();
-        JDBC dbConnect = new JDBC();
+        JDBC dbIns = new JDBC ();
+
+        dbIns.connection();
 
         String downloadFromURL = "https://www.smartform.cz/download/kopidlno.xml.zip";
         String saveToPath = "C:\\Dev\\Udemy\\Db_Fill_With_Network_Data\\src\\main\\resources";
@@ -14,14 +16,16 @@ public class ProcessFile {
         input.unzipFile();
 
         parsing.dataParsing(input.getFileLocation());
-        dbConnect.connection();
+        parsing.nodeListing("vf:Obec",dbIns);
+        parsing.nodeListing("vf:CastObce",dbIns);
 
-        System.out.println("CONNECTED TO DB");
+        System.out.println("\nDATABASE SELECT\n");
 
-        parsing.nodeListing("vf:Obec");
-        parsing.nodeListing("vf:CastObce");
+        dbIns.databaseSelect("Obec");
+        dbIns.databaseSelect("Cast_Obce");
 
-        dbConnect.closeDbConnection();
+        dbIns.closeDbConnection();
+
     }
 
 }
