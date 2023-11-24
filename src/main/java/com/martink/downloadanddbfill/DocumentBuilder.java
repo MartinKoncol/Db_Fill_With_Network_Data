@@ -11,15 +11,15 @@ import java.sql.SQLException;
 
 public class DocumentBuilder {
 
-    Document document;
+    private Document document;
 
     public void dataParsing(String fileLocation) throws Exception {
+
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         javax.xml.parsers.DocumentBuilder builder = factory.newDocumentBuilder();
 
-        document = builder.parse(new File("C:\\Dev\\Udemy\\Db_Fill_With_Network_Data\\src\\main\\resources\\20210331_OB_573060_UZSZ.xml"));
-
-        Document documento = readXMLDocumentFromFile("C:\\Dev\\Udemy\\Db_Fill_With_Network_Data\\src\\main\\resources\\20210331_OB_573060_UZSZ.xml");
+        document = builder.parse(new File(fileLocation));
+        Document documento = readXMLDocumentFromFile(fileLocation);
 
         Element root = documento.getDocumentElement();
         System.out.println(root.getNodeName());
