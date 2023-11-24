@@ -23,7 +23,7 @@ public class JDBC {
             statement = connection.createStatement();
 
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("Unable to connect to DB: " + e);System.exit(-1);
         }
 
     }

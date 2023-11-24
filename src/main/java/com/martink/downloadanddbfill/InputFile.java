@@ -10,8 +10,9 @@ import org.apache.commons.io.FilenameUtils;
 
 public class InputFile {
 
-    private String fileLocation;
-    private String saveToPath;
+    private String saveToPathDownload;
+    private String fileLocationDownload;
+    private String fileLocationUnzip;
 
     private static String getFilenameFromURL(String downloadFromURL) {
         URL url;
@@ -27,29 +28,29 @@ public class InputFile {
                                 String saveToPath) {
 
         String fileName = getFilenameFromURL(downloadFromURL);
-        this.saveToPath = saveToPath;
-        this.fileLocation = this.saveToPath + "//" + fileName;
+        this.saveToPathDownload = saveToPath;
+        this.fileLocationDownload = this.saveToPathDownload + "\\" + fileName;
 
         try {
             saveFileFromUrlWithCommonsIO(
-                    fileLocation, downloadFromURL);
+                    fileLocationDownload, downloadFromURL);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void saveFileFromUrlWithCommonsIO(String fileName,
-                                                    String fileUrl)
+    private static void saveFileFromUrlWithCommonsIO(String fileLocationDownload,
+                                                     String downloadFromURL)
             throws IOException {
-        FileUtils.copyURLToFile(new URL(fileUrl), new File(fileName));
+        FileUtils.copyURLToFile(new URL(downloadFromURL), new File(fileLocationDownload));
     }
 
     public void unzipFile() throws IOException {
 
-        File saveToLocationFile = new File(this.saveToPath);
+        File saveToLocationFile = new File(this.saveToPathDownload);
         byte[] buffer = new byte[1024];
 
-        ZipInputStream zis = new ZipInputStream(new FileInputStream(this.fileLocation));
+        ZipInputStream zis = new ZipInputStream(new FileInputStream(this.fileLocationDownload));
         ZipEntry zipEntry = zis.getNextEntry();
         while (zipEntry != null) {
             while (zipEntry != null) {
@@ -64,7 +65,7 @@ public class InputFile {
                     if (!parent.isDirectory() && !parent.mkdirs()) {
                         throw new IOException("Failed to create directory " + parent);
                     }
-                    writeFileContent(zis,newFile,buffer);
+                    writeFileContent(zis, newFile, buffer);
                 }
                 zipEntry = zis.getNextEntry();
             }
@@ -75,8 +76,8 @@ public class InputFile {
     }
 
     private static void writeFileContent(ZipInputStream zis,
-                                        File newFile,
-                                        byte[] buffer) throws IOException {
+                                         File newFile,
+                                         byte[] buffer) throws IOException {
         FileOutputStream fos = new FileOutputStream(newFile);
         int len;
         while ((len = zis.read(buffer)) > 0) {
@@ -85,8 +86,9 @@ public class InputFile {
         fos.close();
     }
 
-    public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+    public File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
         File destFile = new File(destinationDir, zipEntry.getName());
+        fileLocationUnzip = destFile.getAbsolutePath();
 
         String destDirPath = destinationDir.getCanonicalPath();
         String destFilePath = destFile.getCanonicalPath();
@@ -98,7 +100,7 @@ public class InputFile {
         return destFile;
     }
 
-    public String getFileLocation() {
-        return fileLocation;
+    public String getFileLocationUnzip() {
+        return fileLocationUnzip;
     }
 }
