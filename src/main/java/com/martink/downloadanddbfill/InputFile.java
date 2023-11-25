@@ -7,40 +7,32 @@ import java.util.zip.*;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Logger;
 
 public class InputFile {
-
-    private String saveToPathDownload;
+    Logger logger = Logger.getLogger(InputFile.class);
+    private final String downloadFromURL;
+    private final String saveToPathDownload;
     private String fileLocationDownload;
     private String fileLocationUnzip;
 
-    private static String getFilenameFromURL(String downloadFromURL) {
-        URL url;
-        try {
-            url = new URL(downloadFromURL);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException(e);
-        }
-        return FilenameUtils.getName(url.getPath());
+    public InputFile(String downloadFromURL, String saveToPathDownload) {
+        this.downloadFromURL = downloadFromURL;
+        this.saveToPathDownload = saveToPathDownload;
     }
 
-    public void downloadFileURL(String downloadFromURL,
-                                String saveToPath) {
-
+    public void downloadFileURL() {
         String fileName = getFilenameFromURL(downloadFromURL);
-        this.saveToPathDownload = saveToPath;
-        this.fileLocationDownload = this.saveToPathDownload + "\\" + fileName;
+        this.fileLocationDownload = saveToPathDownload + "\\" + fileName;
 
         try {
-            saveFileFromUrlWithCommonsIO(
-                    fileLocationDownload, downloadFromURL);
+            saveFileFromURL(this.fileLocationDownload, downloadFromURL);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(String.valueOf(e));
         }
     }
 
-    private static void saveFileFromUrlWithCommonsIO(String fileLocationDownload,
-                                                     String downloadFromURL)
+    private static void saveFileFromURL(String fileLocationDownload, String downloadFromURL)
             throws IOException {
         FileUtils.copyURLToFile(new URL(downloadFromURL), new File(fileLocationDownload));
     }
@@ -50,43 +42,21 @@ public class InputFile {
         File saveToLocationFile = new File(this.saveToPathDownload);
         byte[] buffer = new byte[1024];
 
-        ZipInputStream zis = new ZipInputStream(new FileInputStream(this.fileLocationDownload));
-        ZipEntry zipEntry = zis.getNextEntry();
-        while (zipEntry != null) {
+        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(this.fileLocationDownload))) {
+            ZipEntry zipEntry = zis.getNextEntry();
             while (zipEntry != null) {
-                File newFile = newFile(saveToLocationFile, zipEntry);
-                if (zipEntry.isDirectory()) {
-                    if (!newFile.isDirectory() && !newFile.mkdirs()) {
-                        throw new IOException("Failed to create directory " + newFile);
-                    }
-                } else {
-                    // fix for Windows-created archives
-                    File parent = newFile.getParentFile();
-                    if (!parent.isDirectory() && !parent.mkdirs()) {
-                        throw new IOException("Failed to create directory " + parent);
-                    }
-                    writeFileContent(zis, newFile, buffer);
+                while (zipEntry != null) {
+                    File newFile = newFile(saveToLocationFile, zipEntry);
+                    if (zipEntry.isDirectory()) writeFileContent(zis, newFile, buffer);
+                    zipEntry = zis.getNextEntry();
                 }
-                zipEntry = zis.getNextEntry();
             }
+            zis.closeEntry();
         }
-
-        zis.closeEntry();
-        zis.close();
-    }
-
-    private static void writeFileContent(ZipInputStream zis,
-                                         File newFile,
-                                         byte[] buffer) throws IOException {
-        FileOutputStream fos = new FileOutputStream(newFile);
-        int len;
-        while ((len = zis.read(buffer)) > 0) {
-            fos.write(buffer, 0, len);
-        }
-        fos.close();
     }
 
     public File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+
         File destFile = new File(destinationDir, zipEntry.getName());
         fileLocationUnzip = destFile.getAbsolutePath();
 
@@ -94,10 +64,32 @@ public class InputFile {
         String destFilePath = destFile.getCanonicalPath();
 
         if (!destFilePath.startsWith(destDirPath + File.separator)) {
-            throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+            logger.error("Entry is outside of the target dir: " + zipEntry.getName());
         }
 
         return destFile;
+    }
+
+    private static void writeFileContent(ZipInputStream zis, File newFile, byte[] buffer)
+            throws IOException {
+
+        try (FileOutputStream fos = new FileOutputStream(newFile)) {
+            int len;
+            while ((len = zis.read(buffer)) > 0) {
+                fos.write(buffer, 0, len);
+            }
+        }
+
+    }
+
+    private static String getFilenameFromURL(String downloadFromURL) {
+        URL url;
+        try {
+            url = new URL(downloadFromURL);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return FilenameUtils.getName(url.getPath());
     }
 
     public String getFileLocationUnzip() {
