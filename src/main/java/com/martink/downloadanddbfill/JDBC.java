@@ -1,16 +1,17 @@
 package com.martink.downloadanddbfill;
 
 import java.sql.*;
+import org.apache.log4j.Logger;
 
 public class JDBC {
 
+    Logger logger = Logger.getLogger(JDBC.class);
     private Connection connection;
     private Statement statement;
-    private String[] tables = {"Obec", "Cast_Obce"};
-    private String[] columns = {"KodObce", "NazevObce", "NazevCastiObce", "KodCastiObce"};
+    private final String[] tables = {"Obec", "Cast_Obce"};
+    private final String[] columns = {"KodObce", "NazevObce", "NazevCastiObce", "KodCastiObce"};
 
     public void connection() {
-
         String url = "jdbc:mysql://sql11.freesqldatabase.com:3306/sql11663535";
         String username = "sql11663535";
         String password = "s1rNpZ5unl";
@@ -19,11 +20,11 @@ public class JDBC {
 
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(url, username, password);
-            System.out.println("Connected to DB: " + url + " under " + username);
+            logger.info("Connected to DB: %s under %s%n".formatted(url, username));
             statement = connection.createStatement();
 
         } catch (Exception e) {
-            System.out.println("Unable to connect to DB: " + e);System.exit(-1);
+            logger.error("Unable to connect to DB: " + e);System.exit(-1);
         }
 
     }
@@ -39,28 +40,28 @@ public class JDBC {
             sqlins = "INSERT INTO " + tables[1] + "(" + columns[0] + "," + columns[2] + "," + columns[3] + ") values (" + val1 + ", '" + val2 + "'," + val3 + ")";
 
         }
-        System.out.println(sqlins);
+        logger.info(sqlins);
         statement.executeUpdate(sqlins);
     }
 
     public void databaseSelect(String table) throws SQLException {
 
         ResultSet resultSet = statement.executeQuery("select * from " + table);
-        System.out.println("TABLE: " + table + "\n===========================");
+        logger.info("%nTABLE: %s%n".formatted(table));
 
         ResultSetMetaData rsmd = resultSet.getMetaData();
 
         int columnsNumber = rsmd.getColumnCount();
 
         while (resultSet.next()) {
-            for (int i = 1; i <= columnsNumber; i++)
-                System.out.print(resultSet.getString(i) + " ");
-            System.out.println();
+            for (int i = 1; i <= columnsNumber; i++) {
+                logger.info(resultSet.getString(i));
+            }
         }
     }
 
     public void closeDbConnection() throws SQLException {
         connection.close();
-        System.out.println("===========================\nDB connection closed");
+        logger.info("DB connection closed");
     }
 }
