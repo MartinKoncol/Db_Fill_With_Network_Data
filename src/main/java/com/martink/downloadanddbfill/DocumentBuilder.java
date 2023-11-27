@@ -1,20 +1,24 @@
 package com.martink.downloadanddbfill;
 
+import java.io.File;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.sql.SQLException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import javax.xml.parsers.*;
-import java.io.File;
-import java.sql.SQLException;
+import org.xml.sax.SAXException;
 
 public class DocumentBuilder {
 
     private Document document;
 
-    public void dataParsing(String fileLocation) throws Exception {
+    public void dataParsing(String fileLocation) throws
+            ParserConfigurationException, IOException, SAXException {
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
         javax.xml.parsers.DocumentBuilder builder = factory.newDocumentBuilder();
 
         document = builder.parse(new File(fileLocation));

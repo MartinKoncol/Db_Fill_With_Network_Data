@@ -1,9 +1,13 @@
 package com.martink.downloadanddbfill;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipEntry;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.zip.*;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;

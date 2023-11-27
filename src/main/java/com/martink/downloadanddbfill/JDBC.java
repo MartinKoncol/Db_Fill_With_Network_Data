@@ -1,6 +1,11 @@
 package com.martink.downloadanddbfill;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import org.apache.log4j.Logger;
 
 public class JDBC {
@@ -20,7 +25,7 @@ public class JDBC {
 
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(url, username, password);
-            logger.info("Connected to DB: %s under %s%n".formatted(url, username));
+            logger.info("Connected to DB: %s under %s".formatted(url, username));
             statement = connection.createStatement();
 
         } catch (Exception e) {
@@ -47,16 +52,18 @@ public class JDBC {
     public void databaseSelect(String table) throws SQLException {
 
         ResultSet resultSet = statement.executeQuery("select * from " + table);
-        logger.info("%nTABLE: %s%n".formatted(table));
+        logger.info("TABLE: %s".formatted(table));
 
         ResultSetMetaData rsmd = resultSet.getMetaData();
 
         int columnsNumber = rsmd.getColumnCount();
 
         while (resultSet.next()) {
-            for (int i = 1; i <= columnsNumber; i++) {
-                logger.info(resultSet.getString(i));
+            for (int i =1;i <= columnsNumber;i++) {
+                String columnValue = resultSet.getString(i);
+                logger.info(rsmd.getColumnName(i) + " " + columnValue);
             }
+            logger.info("*********");
         }
     }
 
