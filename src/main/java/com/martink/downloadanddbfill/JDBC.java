@@ -1,5 +1,13 @@
 package com.martink.downloadanddbfill;
 
+import static com.martink.downloadanddbfill.Constants.TAG_NAME_MUNICIPALITY;
+import static com.martink.downloadanddbfill.Constants.TAG_NAME_MUNICIPALITY_SECTION;
+import static com.martink.downloadanddbfill.Constants.TABLE_MUNICIPALITY;
+import static com.martink.downloadanddbfill.Constants.TABLE_MUNICIPALITY_SECTION;
+import static com.martink.downloadanddbfill.Constants.MUNICIPALITY_NAME;
+import static com.martink.downloadanddbfill.Constants.MUNICIPALITY_CODE;
+import static com.martink.downloadanddbfill.Constants.MUNICIPALITY_SECTION_NAME;
+import static com.martink.downloadanddbfill.Constants.MUNICIPALITY_SCETION_CODE;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.DriverManager;
@@ -8,13 +16,12 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import org.apache.log4j.Logger;
 
+
 public class JDBC {
 
     Logger logger = Logger.getLogger(JDBC.class);
     private Connection connection;
     private Statement statement;
-    private final String[] tables = {"Obec", "Cast_Obce"};
-    private final String[] columns = {"KodObce", "NazevObce", "NazevCastiObce", "KodCastiObce"};
 
     public void connection() {
         String url = "jdbc:mysql://sql11.freesqldatabase.com:3306/sql11663535";
@@ -36,13 +43,13 @@ public class JDBC {
 
     public void databaseInsert(String tagName, String val1, String val2, String val3) throws SQLException {
         String sqlins = "";
-        if (tagName.equals("vf:Obec")) {
+        if (tagName.equals(TAG_NAME_MUNICIPALITY)) {
 
-            sqlins = "INSERT INTO " + tables[0] + "(" + columns[0] + "," + columns[1] + ") values (" + val1 + ", '" + val2 + "')";
+            sqlins = "INSERT INTO " + TABLE_MUNICIPALITY + "(" + MUNICIPALITY_CODE + "," + MUNICIPALITY_NAME + ") values (" + val1 + ", '" + val2 + "')";
 
-        } else if (tagName.equals("vf:CastObce")) {
+        } else if (tagName.equals(TAG_NAME_MUNICIPALITY_SECTION)) {
 
-            sqlins = "INSERT INTO " + tables[1] + "(" + columns[0] + "," + columns[2] + "," + columns[3] + ") values (" + val1 + ", '" + val2 + "'," + val3 + ")";
+            sqlins = "INSERT INTO " + TABLE_MUNICIPALITY_SECTION + "(" + MUNICIPALITY_CODE + "," + MUNICIPALITY_SECTION_NAME + "," + MUNICIPALITY_SCETION_CODE + ") values (" + val1 + ", '" + val2 + "'," + val3 + ")";
 
         }
         logger.info(sqlins);
