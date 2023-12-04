@@ -71,7 +71,7 @@ public class SQLiteJDBC {
                 System.exit(0);
             }
 
-            LOGGER.info("Table: " + table + " created");
+            LOGGER.info("TABLE: " + table + " CREATED");
             stmt.close();
 
         } catch (Exception e) {
@@ -85,7 +85,7 @@ public class SQLiteJDBC {
             stmt = con.createStatement();
             String sql = "DROP TABLE " + table;
             stmt.executeUpdate(sql);
-            LOGGER.info("Table: " + table + " dropped");
+            LOGGER.info("TABLE: " + table + " DROPPED");
             stmt.close();
         } catch (Exception e) {
             exception(e);

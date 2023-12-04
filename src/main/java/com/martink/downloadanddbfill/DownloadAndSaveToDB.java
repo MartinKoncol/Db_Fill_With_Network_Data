@@ -22,8 +22,6 @@ public class DownloadAndSaveToDB {
 
         SQLiteJDBC dbIns = new SQLiteJDBC();
         dbIns.connectionDB();
-        dbIns.createTable(TABLE_MUNICIPALITY);
-        dbIns.createTable(TABLE_MUNICIPALITY_SECTION);
 
         String downloadFromURL = "https://www.smartform.cz/download/kopidlno.xml.zip";
         String saveToPath = Paths.get("").toAbsolutePath() + "\\src\\main\\resources";
@@ -31,6 +29,9 @@ public class DownloadAndSaveToDB {
         InputFile input = new InputFile(downloadFromURL, saveToPath);
         input.downloadFileURL();
         input.unzipFile();
+
+        dbIns.createTable(TABLE_MUNICIPALITY);
+        dbIns.createTable(TABLE_MUNICIPALITY_SECTION);
 
         parsing.dataParsing(input.getFileLocationUnzip());
         parsing.nodeListing(TAG_NAME_MUNICIPALITY, dbIns);

@@ -31,6 +31,7 @@ public class InputFile {
 
         try {
             saveFileFromURL(this.fileLocationDownload, downloadFromURL);
+            LOGGER.info("File downloaded from " + downloadFromURL + " to " + fileLocationDownload);
         } catch (IOException e) {
             LOGGER.error(String.valueOf(e));
         }
@@ -51,7 +52,12 @@ public class InputFile {
             while (zipEntry != null) {
                 while (zipEntry != null) {
                     File newFile = newFile(saveToLocationFile, zipEntry);
-                    if (zipEntry.isDirectory()) writeFileContent(zis, newFile, buffer);
+                    if (newFile.exists()) {
+                        LOGGER.info("File already unzipped");
+                    } else {
+                        writeFileContent(zis, newFile, buffer);
+                        LOGGER.info("Unzipped file " + fileLocationUnzip);
+                    }
                     zipEntry = zis.getNextEntry();
                 }
             }
