@@ -5,4 +5,5 @@ public class Main {
         DownloadAndSaveToDB mainRun = new DownloadAndSaveToDB();
         mainRun.downloadAndSaveToDB();
     }
+
 }

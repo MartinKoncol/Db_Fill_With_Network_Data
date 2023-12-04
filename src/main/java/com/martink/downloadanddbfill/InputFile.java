@@ -1,5 +1,7 @@
 package com.martink.downloadanddbfill;
 
+import static com.martink.downloadanddbfill.Constants.LOGGER;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
@@ -11,10 +13,8 @@ import java.net.URL;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
 
 public class InputFile {
-    Logger logger = Logger.getLogger(InputFile.class);
     private final String downloadFromURL;
     private final String saveToPathDownload;
     private String fileLocationDownload;
@@ -32,7 +32,7 @@ public class InputFile {
         try {
             saveFileFromURL(this.fileLocationDownload, downloadFromURL);
         } catch (IOException e) {
-            logger.error(String.valueOf(e));
+            LOGGER.error(String.valueOf(e));
         }
     }
 
@@ -68,7 +68,7 @@ public class InputFile {
         String destFilePath = destFile.getCanonicalPath();
 
         if (!destFilePath.startsWith(destDirPath + File.separator)) {
-            logger.error("Entry is outside of the target dir: " + zipEntry.getName());
+            LOGGER.error("Entry is outside of the target dir: " + zipEntry.getName());
         }
 
         return destFile;
