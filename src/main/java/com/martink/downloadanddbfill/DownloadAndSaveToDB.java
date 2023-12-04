@@ -4,22 +4,26 @@ import static com.martink.downloadanddbfill.Constants.TAG_NAME_MUNICIPALITY;
 import static com.martink.downloadanddbfill.Constants.TAG_NAME_MUNICIPALITY_SECTION;
 import static com.martink.downloadanddbfill.Constants.TABLE_MUNICIPALITY;
 import static com.martink.downloadanddbfill.Constants.TABLE_MUNICIPALITY_SECTION;
+
 import org.apache.log4j.BasicConfigurator;
 import org.xml.sax.SAXException;
+
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.sql.SQLException;
 
 public class DownloadAndSaveToDB {
 
     public void downloadAndSaveToDB() throws
-            IOException, SQLException, ParserConfigurationException, SAXException {
+            IOException, ParserConfigurationException, SAXException {
+
         DocumentBuilder parsing = new DocumentBuilder();
         BasicConfigurator.configure();
 
-        JDBC dbIns = new JDBC();
-        dbIns.connection();
+        SQLiteJDBC dbIns = new SQLiteJDBC();
+        dbIns.connectionDB();
+        dbIns.createTable(TABLE_MUNICIPALITY);
+        dbIns.createTable(TABLE_MUNICIPALITY_SECTION);
 
         String downloadFromURL = "https://www.smartform.cz/download/kopidlno.xml.zip";
         String saveToPath = Paths.get("").toAbsolutePath() + "\\src\\main\\resources";
@@ -35,7 +39,7 @@ public class DownloadAndSaveToDB {
         dbIns.databaseSelect(TABLE_MUNICIPALITY);
         dbIns.databaseSelect(TABLE_MUNICIPALITY_SECTION);
 
-        dbIns.closeDbConnection();
+        dbIns.closeConnectionDB();
 
     }
 
