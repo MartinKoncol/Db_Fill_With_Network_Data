@@ -99,11 +99,18 @@ public class SQLiteJDBC {
             stmt = con.createStatement();
             if (tagName.equals(TAG_NAME_MUNICIPALITY)) {
 
-                sqlins = "INSERT INTO " + TABLE_MUNICIPALITY + "(" + MUNICIPALITY_CODE + "," + MUNICIPALITY_NAME + ") values (" + val1 + ", '" + val2 + "')";
+                sqlins = "INSERT INTO " + TABLE_MUNICIPALITY +
+                        "(" + MUNICIPALITY_CODE + ","
+                        + MUNICIPALITY_NAME + ") " +
+                        "values (" + val1 + ", '" + val2 + "')";
 
             } else if (tagName.equals(TAG_NAME_MUNICIPALITY_SECTION)) {
 
-                sqlins = "INSERT INTO " + TABLE_MUNICIPALITY_SECTION + "(" + MUNICIPALITY_CODE + "," + MUNICIPALITY_SECTION_NAME + "," + MUNICIPALITY_SECTION_CODE + ") values (" + val1 + ", '" + val2 + "'," + val3 + ")";
+                sqlins = "INSERT INTO " + TABLE_MUNICIPALITY_SECTION +
+                        "(" + MUNICIPALITY_CODE + ","
+                        + MUNICIPALITY_SECTION_NAME + ","
+                        + MUNICIPALITY_SECTION_CODE + ")" +
+                        " values (" + val1 + ", '" + val2 + "'," + val3 + ")";
 
             }
             LOGGER.info(sqlins);
@@ -114,7 +121,7 @@ public class SQLiteJDBC {
         }
     }
 
-    public void databaseSelect(String table)  {
+    public void databaseSelect(String table) {
         try {
             stmt = con.createStatement();
             ResultSet resultSet = stmt.executeQuery("select * from " + table);
@@ -146,7 +153,7 @@ public class SQLiteJDBC {
         }
     }
 
-    public void exception(Exception e){
+    public void exception(Exception e) {
         LOGGER.error(e.getClass().getName() + ": " + e.getMessage());
         closeConnectionDB();
         System.exit(0);
